@@ -1,0 +1,602 @@
+1.异步的理解   
+同步任务和异步任务，同步任务就是在主线程上排队执行的任务，只有前一个任务执行完毕，才能执行后一个任务；异步任务指的是，不进入主线程、而进入任务队列（task queue）的任务，只有任务队列通知主线程，某个异步任务可以执行了，该任务才会进入主线程执行。
+回调函数、Promise、生成器、Async/Await等来实现异步。
+
+为什么要用异步
+同步下前一个事件执行完了才能执行后一个事件，那么要是遇到Ajax请求这种耗时很长的，那页面在这段时间就没法操作了，卡在那儿，更有甚者，万一这个请求由于某种原因一直没有完成，那页面就block了，很不友好
+
+2.promise和settimeout谁先触发，为什么      
+
+先执行promise  异步队列优先级更高一点
+
+3.settimeout延迟时间为0，是先执行里面的代码，还是先执行后面的代码   
+先执行后面的  设为 0，就代表立即插入队列，但不是立即执行
+
+4.vuex和redux的区别   
+
+Vuex是吸收了Redux的经验,放弃了一些特性作了下优化,代价是只能和vue配合
+Redux 是一个纯粹的状态管理系统,React利用React-Redux和React框架结合起来
+vuex是redux的基础进行改变,对仓库的管理更加明确
+vuex有自动渲染的功能,所以不需要更新
+
+
+vuex的流向：view——>commit——>mutations——>state变化——>view变化（同步操作）
+          view——>dispatch——>actions——>mutations——>state变化——>view变化（异步操作）
+
+redux的流向：view——>actions——>reducer——>state变化——>view变化（同步异步一样）
+
+redux的state数据设计，进行范式化。
+
+
+5.nodejs中的文件模块，怎么处理异步，怎么读取文件路径   
+./ 同页面的文件 __dirname 表示当前文件的目录名 
+
+默认异步 Sync同步。
+
+
+6.vue的路由，常用的生命周期函数      
+
+
+7.vue与动画，你是怎么使用的   
+2我引用了animate.css插件，稍微感受一下来自animate.css插件使用感，简单的介绍它吧，animate.css是一个来自国外的 CSS3 动画库，它预设了抖动（shake）、闪烁（flash）、弹跳（bounce）、翻转（flip）、旋转（rotateIn/rotateOut）、淡入淡出（fadeIn/fadeOut）等多达 60 多种动画效果，几乎包含了所有常见的动画效果。
+
+
+8.translate与animation的区别. 
+
+animation和transition的区别
+1、transition更适用于简单状态的过渡
+2、animation可以没有触发条件但是transition不可以，所以在例如页面刚加载时的动画可以使用animation
+3、animation可以通过更多的参数实现更复杂的动画效果，包括关键帧数、速度曲线、播放的次数、是否逆向播放等，（官方介绍中animation是transition属性的扩展）
+
+9.animation动画结束后css样式怎么保留最后状态 
+animation-name	规定需要绑定到选择器的 keyframe 名称。。
+animation-duration	规定完成动画所花费的时间，以秒或毫秒计。
+animation-timing-function	规定动画的速度曲线。
+animation-delay	规定在动画开始之前的延迟。
+animation-iteration-count	规定动画应该播放的次数。
+animation-direction	规定是否应该轮流反向播放动画。
+animation-fill-mode:forwards
+animation-fill-mode : none | forwards | backwards | both;
+
+值                 描述
+none               不改变默认行为。
+forwards           当动画完成后，保持最后一个属性值（在最后一个关键帧中定义）。
+backwards          在 animation-delay 所指定的一段时间内，在动画显示之前，应用开始属性值（在第一个关键帧中定义）。
+both               向前和向后填充模式都被应用。
+
+作者：捷搜索
+链接：https://www.jianshu.com/p/2614002e7562
+來源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
+
+创建对象的几种方式
+https://www.jb51.net/article/107012.htm
+new Object 对象字面量 构造函数 原型
+10.less和scss哪个用得比较多，如何定义代码块
+mixin 定义代码块 @include引入  找元素 mixin的强大之处，在于可以指定参数和缺省值。 所有变量以$开头。
+
+11，requirejs  小巧的模块加载器 使用AMD规范 异步模块加载机制 压缩后14kb
+
+12.(webpack)vue-cli构建的项目如何设置每个页面的title
+在路由里每个都添加一个meta
+
+[{
+    path:'/login',
+    meta: {
+      title: '登录页面'
+    },
+    component:'login'
+}]
+钩子函数：
+
+在main.js中添加如下代码
+
+router.beforeEach((to, from, next) => {
+  window.document.title = to.meta.title;
+  next()
+})
+
+13 vue设置cookie
+//设置cookie,增加到vue实例方便全局调用
+Vue.prototype.setCookie = (c_name, value, expiredays) => {
+  var exdate = new Date();　　　　
+  exdate.setDate(exdate.getDate() + expiredays);　　　　
+  document.cookie = c_name + "=" + escape(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
+}
+
+//获取cookie
+Vue.prototype.getCookie = (name) => {
+    var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    if (arr = document.cookie.match(reg))
+        return (arr[2]);
+    else
+        return null;
+}
+
+//删除cookie
+Vue.prototype.delCookie =(name) => {
+    var exp = new Date();
+    exp.setTime(exp.getTime() - 1);
+    var cval = this.getCookie(name);
+    if (cval != null)
+      document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+  }
+
+
+14 element-ui 组件
+内置过渡动画
+组件
+Basic
+Layout 布局
+Container 布局容器
+Color 色彩
+Typography 字体
+Icon 图标
+Button 按钮
+Form
+Radio 单选框
+Checkbox 多选框
+Input 输入框
+InputNumber 计数器
+Select 选择器
+Cascader 级联选择器
+Switch 开关
+Slider 滑块
+TimePicker 时间选择器
+DatePicker 日期选择器
+DateTimePicker 日期时间选择器
+Upload 上传
+Rate 评分
+ColorPicker 颜色选择器
+Transfer 穿梭框
+Form 表单
+Data
+Table 表格
+Tag 标签
+Progress 进度条
+Tree 树形控件
+Pagination 分页
+Badge 标记
+Notice
+Alert 警告
+Loading 加载
+Message 消息提示
+MessageBox 弹框
+Notification 通知
+Navigation
+NavMenu 导航菜单
+Tabs 标签页
+Breadcrumb 面包屑
+Dropdown 下拉菜单
+Steps 步骤条
+Others
+Dialog 对话框
+Tooltip 文字提示
+Popover 弹出框
+Card 卡片
+Carousel 走马灯
+Collapse 折叠面板
+¶ 内置过渡动画
+Element 内应用在部分组件的过渡动画，你也可以直接使用。在使用之前请阅读 transition 组件文档 。
+¶ fade 淡入淡出
+15、https://www.jianshu.com/p/e5ca5b78e03e
+16、移动端适配
+17、vue优化
+key值不要用下标。key值有助于vue识别每个节点的身份便于重新操作
+<keep-alive>是Vue的内置组件，能在组件切换过程中将状态保留在内存中，防止重复渲染DOM。
+<keep-alive> 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。和 <transition> 相似，<keep-alive> 是一个抽象组件：它自身不会渲染一个 DOM 元素，也不会出现在父组件链中。
+<keep-alive include="test-keep-alive">
+  <!-- 将缓存name为test-keep-alive的组件 -->
+  <component></component>
+</keep-alive>
+
+<keep-alive include="a,b">
+  <!-- 将缓存name为a或者b的组件，结合动态组件使用 -->
+  <component :is="view"></component>
+</keep-alive>
+
+<!-- 使用正则表达式，需使用v-bind -->
+<keep-alive :include="/a|b/">
+  <component :is="view"></component>
+</keep-alive>
+
+<!-- 动态判断 -->
+<keep-alive :include="includedComponents">
+  <router-view></router-view>
+</keep-alive>
+
+<keep-alive exclude="test-keep-alive">
+  <!-- 将不缓存name为test-keep-alive的组件 -->
+  <component></component>
+</keep-alive>
+
+结合router，缓存部分页面
+
+使用$route.meta的keepAlive属性：
+
+<keep-alive>
+    <router-view v-if="$route.meta.keepAlive"></router-view>
+</keep-alive>
+<router-view v-if="!$route.meta.keepAlive"></router-view>
+
+需要在router中设置router的元信息meta：
+
+//...router.js
+export default new Router({
+  routes: [
+    {
+      path: '/',
+      name: 'Hello',
+      component: Hello,
+      meta: {
+        keepAlive: false // 不需要缓存
+      }
+    },
+    {
+      path: '/page1',
+      name: 'Page1',
+      component: Page1,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    }
+  ]
+})
+
+
+A的路由：
+
+{
+    path: '/',
+    name: 'A',
+    component: A,
+    meta: {
+        keepAlive: true // 需要被缓存
+    }
+}
+export default {
+    data() {
+        return {};
+    },
+    methods: {},
+    beforeRouteLeave(to, from, next) {
+         // 设置下一个路由的 meta
+        to.meta.keepAlive = true;  // B 跳转到 A 时，让 A 缓存，即不刷新
+        next();
+    }
+};
+export default {
+    data() {
+        return {};
+    },
+    methods: {},
+    beforeRouteLeave(to, from, next) {
+        // 设置下一个路由的 meta
+        to.meta.keepAlive = false; // C 跳转到 A 时让 A 不缓存，即刷新
+        next();
+    }
+};
+
+I：activated、deactivated
+
+使用<keep-alive>会将数据保留在内存中，如果要在每次进入页面面的时候获取最新的数据，需要在activated阶段获取数据，承担原来created钩子中获取数据的任务。
+
+method computed尽量使用computed属性 因为他也有缓存 减少计算
+
+18 页面优化
+面优化，除了大家长记的几种，还要说一种：产品上线后，会针对高并发的情况下，公司会使用本地存储封装方法，将用户数据进行静态缓存，以减少服务器压力！
+
+19 深拷贝
+2、通过 JSON 对象实现深拷贝
+//通过js的内置对象JSON来进行数组对象的深拷贝，一层深拷贝
+function deepClone2(obj) {
+  var _obj = JSON.stringify(obj),
+    objClone = JSON.parse(_obj);
+  return objClone;
+}
+
+Object.assign()拷贝
+当对象中只有一级属性，没有二级属性的时候，此方法为深拷贝，但是对象中有对象的时候，此方法，在二级属性以后就是浅拷贝。
+放入数组和对象 可以联合数组。contact 后面的会覆盖前面的
+
+3、通过jQuery的extend方法实现深拷贝
+var array = [1,2,3,4];
+var newArray = $.extend(true,[],array);
+
+5、lodash函数库实现深拷贝
+lodash很热门的函数库，提供了 lodash.cloneDeep()实现深拷贝
+
+20 react优化
+react优化希望大家在答的时候，除了sholdComponent这钩子函数，还要答  1.key值尽量不要用数组的下标，可以获取当前的时间戳作为下标；2.在传数据的时候，如果没有用到某个对象的全部属性，就不要将一个对象进行传递，在render函数前进行申明好再传；3.由于第一次渲染页面时多了一次diff算法，性能反而下降了，可以使用懒加载进行优化，4.在react里面还有一种纯组件：pureComponent，他里面可以进行浅比较，也是可以优化的，原理和sholdComponent一样；
+
+21 页面优化手段
+
+22 h5新特性
+Web前端最新的官方标准无疑就是es6和H5了，es6之前已经说过了（多是一些语法糖），现在来总结一下H5给我们来了哪些新“朋友”吧~
+
+1.video/radio  视频/音频
+
+2.canvas 绘画
+
+3.geolocation 定位
+
+4.WebSocket 前后端双向通讯
+
+5.localStorage/sessionStorage代替cookie本地存储
+
+6.文件拖拽（drag事件+dataTransfer+FileReader）
+
+7.WebWorker js多线程,提高性能
+
+8.WebSQL 前端数据库(已被官方弃用)
+
+9.manifest 离线缓存
+
+ 同时也新增了一些标签，常用的有：header、nav、section、aside、footer
+
+ 为了使得IE6-8兼容H5的新标签：
+
+我们会引入如下代码：
+
+<!--[if lt IE 9]>
+  <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.js"></script>
+  <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.js"></script>
+<![endif]-->
+
+23 vue transition 组件
+https://www.jianshu.com/p/6d7728482c9f
+ Velocity.js
+
+当插入或删除包含在 transition 组件中的元素时，Vue 将会做以下处理：
+
+自动嗅探目标元素是否应用了 CSS 过渡或动画，如果是，在恰当的时机添加/删除 CSS 类名。
+
+如果过渡组件提供了 JavaScript 钩子函数，这些钩子函数将在恰当的时机被调用。
+
+如果没有找到 JavaScript 钩子并且也没有检测到 CSS 过渡/动画，DOM 操作 (插入/删除) 在下一帧中立即执行。(注意：此指浏览器逐帧动画机制，和 Vue 的 nextTick 概念不同)
+
+过渡的类名
+在进入/离开的过渡中，会有 6 个 class 切换。
+
+v-enter：定义进入过渡的开始状态。在元素被插入之前生效，在元素被插入之后的下一帧移除。
+
+v-enter-active：定义进入过渡生效时的状态。在整个进入过渡的阶段中应用，在元素被插入之前生效，在过渡/动画完成之后移除。这个类可以被用来定义进入过渡的过程时间，延迟和曲线函数。
+
+v-enter-to: 2.1.8版及以上 定义进入过渡的结束状态。在元素被插入之后下一帧生效 (与此同时 v-enter 被移除)，在过渡/动画完成之后移除。
+
+v-leave: 定义离开过渡的开始状态。在离开过渡被触发时立刻生效，下一帧被移除。
+
+v-leave-active：定义离开过渡生效时的状态。在整个离开过渡的阶段中应用，在离开过渡被触发时立刻生效，在过渡/动画完成之后移除。这个类可以被用来定义离开过渡的过程时间，延迟和曲线函数。
+
+v-leave-to: 2.1.8版及以上 定义离开过渡的结束状态。在离开过渡被触发之后下一帧生效 (与此同时 v-leave 被删除)，在过渡/动画完成之后移除。
+https://www.jb51.net/article/144198.htm
+
+
+22 懒加载
+路由懒加载（复杂）https://blog.csdn.net/m0_37452696/article/details/80160024
+图片懒加载
+vue-lazyload
+http://www.cnblogs.com/xyyt/p/7650539.html
+img标签中使用懒加载：v-lazy 代替 v-bind:src ；
+背景图片中使用懒加载：v-lazy:background-image = ""  ==>> 注意图片和盒子大小问题，否则显示可能有问题哦。
+scrollBehavior 滚动行为//拓展
+
+23、vue闪屏
+1.在vue容器的div里面加上 v-cloak
+
+<div id="app" v-cloak>
+1.使用了{{}},解决方案使用v-bind
+2.使用v-if，出现原先要隐藏的元素先出现然后在隐藏从而造成了闪烁的问题。
+
+1
+2.样式文件中加上
+
+  <style type="text/css">
+        [v-cloak] {
+            display: none !important;
+        }
+    </style>	
+
+24 ajax写法 原生 get post
+https://www.jianshu.com/p/2be2e4f1fc8e
+
+jq $.ajax({
+  type: 'POST',
+  url: url,
+  data: data,
+  success: success,
+  dataType: dataType
+});
+
+25 前端优化
+ 前端性能优化的方法有哪些? 减少http 的请求注意压缩图片减少dom 操作使用json格式来进行数据交互懒加载使用精灵图注意控制Cookie大小和污染 设置合理的过期时间压缩图片和使用图片Sprite技术精简CSS和JS文件 使用CDN加速（内容分发网络）：将CSS和JS放到外部文件中引用，CSS放头，JS放尾 
+
+26.数据类型
+值类型(基本类型)：字符串（String）、数字(Number)、布尔(Boolean)、对空（Null）、未定义（Undefined）、Symbol。
+
+引用数据类型：对象(Object)、数组(Array)、函数(Function)。
+
+27图片打包压缩
+npm install imagemin-webpack-plugin  base64
+
+28 vue全家桶
+vuex vue-router vue-resource
+
+29 浏览器兼容
+-moz-     /* 火狐等使用Mozilla浏览器引擎的浏览器 */ 
+-webkit-  /* Safari, 谷歌浏览器等使用Webkit引擎的浏览器 */ 
+-o-       /* Opera浏览器(早期) */ 
+-ms-      /* Internet Explorer (不一定) */ 
+1、Trident内核，也称IE内核。
+
+　　2、Webkit内核。
+
+　　3、Gecko内核。火狐
+
+　　4、Presto内核。欧朋  后来改为webkit内核  改为blink内核
+
+30 应用程序缓存 与 浏览器缓存
+HTML5提出了两大离线存储技术：localstorage与Application Cache
+
+HTML5引入了应用程序缓存技术，意味着web应用可进行缓存，并在没有网络的情况下使用，通过创建cache manifest文件，可以轻松的创建离线应用。
+
+Application Cache带来的三个优势是：
+
+① 离线浏览
+
+② 提升页面载入速度
+
+③ 降低服务器压力
+
+而且主要浏览器皆以支持Application Cache，就算不支持也不会对程序造成什么影响
+
+
+session 域名下储存
+
+31 便利ul li
+https://blog.csdn.net/wangjiangnan17214/article/details/55101538
+
+<script type="text/javascript">
+ 
+$("ul").delegate("li", "click", function(){
+    var index = $(this).index();
+    var info = $(this).html();
+    alert(index + "----" + info);
+});
+ 
+</script>
+ 
+<script type="text/javascript">
+ 
+$("ul").on("click", "li", function(){
+    var index = $(this).index();
+    var info = $(this).html();
+    alert(index + "----" + info);
+});
+ 
+</script>
+
+原生事件委托
+// 事件委托具体实现
+var ul = document.getElementById("ul");
+    ul.onclick = function (event) {
+        event = event || window.event;
+        var target = event.target;
+        // 获取目标元素
+        if (target.nodeName == 'LI') {
+            alert(target.innerHTML);
+        }
+    }
+    // 为按钮绑定点击事件
+    var btn = documentstion () {
+        var li = document.createElement('li');
+        // 新增li的内容为ul当前子元素的个数
+        li.textContent = ul.children.length;
+        ul.appendChild(li);
+    }
+32  html5文档类型和字符集
+<!doctype html> <meta charset="utf-8">
+
+33  小程序 
+小程序框架系统分为两部分  视图层view  逻辑层 App service
+框架可以让数据与视图层保持同步 当做数据修改的时候 只要在逻辑层修改数据，视图层就会更新 
+bindtap=“”
+this.setData({msg:this.data.msg} )
+wx.getstorageSync(‘logs’) 同步获取数据
+onlaunch（） gloabData
+wx.navigate ({url:””})
+底部foot 全局app.json配置
+新建 不理
+wx.switchTab({}) 调整登录页
+
+34 小程序的生命周期
+onLaunch初始化  onShow显示  onHide隐藏 onError错误 onPageNotFound页面不存在监听函数
+
+开发者可以使用 wx.getSetting 获取用户当前的授权状态。 authSetting	AuthSetting	用户授权结果
+wx.getUserInfo(Object object)
+调用前需要 用户授权 scope.userInfo。
+获取用户信息。
+wx.request()只能请求https协议的
+page.route
+自定义事件带参数需要自定义属性来获取
+<view id="tapTest" data-hi="WeChat" bindtap="tapName">Click me!</view>
+在相应的Page定义中写上相应的事件处理函数，参数是event。
+Page({
+  tapName(event) {
+    console.log(event)
+  }
+})
+可以看到log出来的信息大致如下：
+{
+  "type": "tap",
+  "timeStamp": 895,
+  "target": {
+    "id": "tapTest",
+    "dataset": {
+      "hi": "WeChat"
+    }
+  },
+  "currentTarget": {
+    "id": "tapTest",
+    "dataset": {
+      "hi": "WeChat"
+    }
+  },
+  "detail": {
+    "x": 53,
+    "y": 14
+  },
+  "touches": [
+    {
+      "identifier": 0,
+      "pageX": 53,
+      "pageY": 14,
+      "clientX": 53,
+      "clientY": 14
+    }
+  ],
+  "changedTouches": [
+    {
+      "identifier": 0,
+      "pageX": 53,
+      "pageY": 14,
+      "clientX": 53,
+      "clientY": 14
+    }
+  ]
+}
+
+
+双向绑定  e.detal.value
+template  is  import
+
+wx.getStorageSync()
+set
+
+对象的对象 查询 key
+model
+
+攻击 防护
+actionsheet  action  wx.showToast({})轻提示 wx.showActionSheet wx.showModal swiper 变量{{}} wx.showLoading wx:if=“{{show}}”  wx.hiddenLoading
+rpx 小程序特定的单位
+
+open type
+open-type 有效值：
+navigator 跳转 url=
+
+值	说明	最低版本
+navigate	对应 wx.navigateTo 或 wx.navigateToMiniProgram 的功能	
+redirect	对应 wx.redirectTo 的功能	
+switchTab	对应 wx.switchTab 的功能	
+reLaunch	对应 wx.reLaunch 的功能	1.1.0
+navigateBack	对应 wx.navigateBack 的功能	1.1.0
+exit	退出小程序，target="miniProgram"时生效	2.1.0
+I地图
+画布
+
+tips
+timeout 和 ajax 属于同一类，都叫宏任务，promise 和 async、await 属于微任务
+微任务的执行优先于宏任务
+捕获大于本身大于冒泡
+一个实例只能有一个原型
+但是一个原型可以产生无数个实例
